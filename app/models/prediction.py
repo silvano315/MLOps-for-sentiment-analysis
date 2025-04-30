@@ -2,7 +2,7 @@ import logging
 import time
 import torch
 import numpy as np
-from torch.nn.fuctional import softmax
+from torch.nn.functional import softmax
 from typing import Optional, Any, Dict, List, Union
 
 from app.models.model_loader import get_model, SentimentModel
@@ -45,11 +45,11 @@ class SentimentPredictor:
 
         # Inference
         try:
-            eith torch.no_grad():
-            outputs = self.model.model(**encoded_inputs)
+            with torch.no_grad():
+                outputs = self.model.model(**encoded_inputs)
         except Exception as e:
             logger.error(f"Error during inference: {str(e)}")
-            raise RunTimeError(f"Prediction failed: {str(e)}")
+            raise RuntimeError(f"Prediction failed: {str(e)}")
 
         predictions = []
         logits = outputs.logits.cpu().numpy()
@@ -58,7 +58,7 @@ class SentimentPredictor:
 
         for i, (text, probs) in enumerate(zip(texts, probabilities)):
             predicted_class = int(np.argmax(probs))
-            sentimet = self.model.id2label[predicted_class]
+            sentiment = self.model.id2label[predicted_class]
 
             result = {
                 "text" : text,

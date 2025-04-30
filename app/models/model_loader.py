@@ -69,20 +69,20 @@ class SentimentModel:
             logger.info("model loaded successfully")
         except Exception as e:
             logger.error(f"Error loading model: {str(e)}")
-            raise RunTimeError(f"Failed to load model: {str(e)}")
+            raise RuntimeError(f"Failed to load model: {str(e)}")
 
-    def _load_label_mapping(sefl) -> None:
+    def _load_label_mapping(self) -> None:
         """Load label mapping for the model."""
         # [From HugginFace] Labels: 0 -> Negative; 1 -> Neutral; 2 -> Positive
 
         self.id2label = {
-            0 : "negative".
+            0 : "negative",
             1 : "neutral",
             2 : "positive"
         }
         self.label2id = {v : k for k, v in self.id2label.items()}
 
-    def predict (self. texts: Union[str, List[str]]) -> List[Dict[str, Any]]:
+    def predict (self, texts: Union[str, List[str]]) -> List[Dict[str, Any]]:
         """
         Perform sentiment analysis on text(s).
         

@@ -27,7 +27,7 @@ class DatasetLoader:
             return dataset
         except Exception as e:
             logger.error(f"Error loading primary dataset: {str(e)}")
-            raise RunTimeError(f"Failed to load primary dataset: {str(e)}")
+            raise RuntimeError(f"Failed to load primary dataset: {str(e)}")
 
     def load_secondary_dataset(self) -> Union[Dataset, DatasetDict]:
         """
@@ -39,7 +39,7 @@ class DatasetLoader:
 
         try:
             logger.info(f"Loading secondary dataset: {self.settings.SECONDARY_DATASET}")
-            dataset = load_dataset(
+            dataset = load_datasets(
                 self.settings.SECONDARY_DATASET,
                 self.settings.SECONDARY_DATASET_CONFIG
             )
