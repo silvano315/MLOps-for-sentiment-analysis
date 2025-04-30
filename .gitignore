@@ -172,3 +172,18 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Logs
+logs/
+*.log
+
+# Docker
+.docker/
+
+# Data
+*.csv
+*.json
+!/config/*.json
+!/infrastructure/grafana/dashboards/*.json
+*.parquet
+*.pkl
