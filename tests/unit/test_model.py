@@ -29,5 +29,5 @@ def test_sentiment_prediction():
         assert result["sentiment"] in ["negative", "neutral", "positive"]
         assert 0 <= result["confidence"] <= 1
     
-    assert result[0]["sentiment"] == "positive"
-    assert result[1]["sentiment"] == "negative"
+    assert results[0]["sentiment"] == "positive"
+    assert results[1]["sentiment"] == "negative"

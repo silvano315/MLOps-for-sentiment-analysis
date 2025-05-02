@@ -1,9 +1,14 @@
 import os
 from typing import Dict, Any, Optional
-from pydantic_settings import BaseSettings 
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     "Application settings"
+
+    model_config = SettingsConfigDict(
+        env_file = ".venv",
+        env_file_encoding = "utf-8"
+    )
 
     # API configuration
     API_TITLE: str = "Sentiment Analysis API"
@@ -26,10 +31,6 @@ class Settings(BaseSettings):
     # RapidAPI configuration
     RAPIDAPI_KEY: Optional[str] = None
     TWITTER_API_HOST: str = "twitter154.p.rapidapi.com"
-
-    class Config:
-        env_file = ".venv"
-        env_file_encoding = "utf-8"
 
 settings = Settings()
 
