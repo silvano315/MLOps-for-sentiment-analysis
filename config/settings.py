@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     SECONDARY_DATASET_CONFIG: str = "en" 
 
     # Monitoring configuration
-    METRICS_REPORT: int = 8000
+    METRICS_PORT: int = 8000
 
     # RapidAPI configuration
     RAPIDAPI_KEY: Optional[str] = None
