@@ -21,6 +21,36 @@ class SentimentRequest(BaseModel):
     model_config = ConfigDict(
         json_schema_extra = {
             "example" : {
+                "texts" : "I really enjoyed using this product, it exceeded my expectations!"
+            }
+        }
+    )
+
+class BatchSentimentRequest(BaseModel):
+    """Schema for a batch sentiment analysis request."""
+    
+    texts: List[str] = Field(
+        ...,
+        min_items=1,
+        max_items=100,
+        description="List of texts to analyze for sentiment."
+    )
+
+    @field_validator('texts')
+    def texts_must_not_be_empty(cls, v):
+        """Validate that each text is not empty."""
+        if not v:
+            raise ValueError('Texts list must not be empty')
+        
+        for i, text in enumerate(v):
+            if not text.strip():
+                raise ValueError(f'Text at index {i} must not be empty or whitespace only')
+        
+        return v
+
+    model_config = ConfigDict(
+        json_schema_extra = {
+            "example" : {
                 "texts" : [
                     "I really enjoyed using this product, it exceeded my expectations!",
                     "The customer service was terrible, I had to wait for hours.",
