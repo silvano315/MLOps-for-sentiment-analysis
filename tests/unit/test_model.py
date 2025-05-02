@@ -31,3 +31,12 @@ def test_sentiment_prediction():
     
     assert results[0]["sentiment"] == "positive"
     assert results[1]["sentiment"] == "negative"
+    assert results[2]["sentiment"] == "neutral"
+
+def test_confidence_matches_probs():
+    """Test to ensure confidence matches the max value in probabilities."""
+
+    texts = ["I love it!"]
+    result = predict_sentiment(texts)[0]
+    max_prob = max(result['probabilities'].values())
+    assert abs(result["confidence"] - max_prob) <= 1e-6
