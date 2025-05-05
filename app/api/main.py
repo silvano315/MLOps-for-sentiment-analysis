@@ -8,7 +8,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any, Dict
 
-from app.api.routers import sentiment_router, health_router
+from app.api.routers import sentiment_router, health_router, admin_router
 from app.api.middlewares.logging_middleware import LoggingMiddleware
 from app.utils.config import get_settings
 
@@ -40,6 +40,7 @@ app.add_middleware(LoggingMiddleware)
 
 app.include_router(health_router.router, tags = ["Health"])
 app.include_router(sentiment_router.router, prefix = "/api/v1", tags = ["Sentiment"])
+app.include_router(admin_router.router, tags=["Admin"])
 
 # Just for debugging
 for route in app.router.routes:
