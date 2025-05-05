@@ -21,7 +21,7 @@ class SentimentRequest(BaseModel):
     model_config = ConfigDict(
         json_schema_extra = {
             "example" : {
-                "texts" : "I really enjoyed using this product, it exceeded my expectations!"
+                "text" : "I really enjoyed using this product, it exceeded my expectations!"
             }
         }
     )
