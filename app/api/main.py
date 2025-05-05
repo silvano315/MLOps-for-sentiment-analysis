@@ -2,6 +2,7 @@ import time
 import logging
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 from typing import Any, Dict
 
 from app.api.routers import sentiment_router, health_router
@@ -37,8 +38,12 @@ app.add_middleware(LoggingMiddleware)
 app.include_router(health_router.router, tags = ["Health"])
 app.include_router(sentiment_router.router, prefix = "/api/v1", tags = ["Sentiment"])
 
-@app.lifespan("startup")
-async def startup_event():
+# Just for debugging
+for route in app.router.routes:
+    print(f"Route: {route.path} → {route.name}")
+
+
+def startup_event():
     """
     Execute operations on application startup.
     """
@@ -51,9 +56,17 @@ async def startup_event():
 
     logger.info(f"Startup completed in {time.time() - start_time:.2f} seconds")
 
-@app.lifespan("shutdown")
-async def shutdown_event():
+def shutdown_event():
     """
     Execute operations on application shutdown.
     """
     logger.info("Shutting down sentiment analysis API")
+
+@asynccontextmanager
+async def lifespan():
+
+    startup_event()
+
+    yield
+
+    shutdown_event()

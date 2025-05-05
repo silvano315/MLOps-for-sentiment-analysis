@@ -92,4 +92,4 @@ async def liveness_check() -> Dict[str, str]:
         Liveness status
     """
 
-    return {"status", "alive"}
+    return {"status" : "alive"}
