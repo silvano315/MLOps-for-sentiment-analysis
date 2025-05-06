@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # API FastAPI
+  api:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile
+    container_name: sentiment-api
+    ports:
+      - "8080:8080"  # API
+      - "8000:8000"  # Metriche Prometheus
+    volumes:
+      - model-cache:/app/models/cache
+      - dataset-volume:/app/data/datasets
+    environment:
+      - METRICS_PORT=8000
+    networks:
+      - sentiment-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # Prometheus - Raccolta metriche
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: sentiment-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - sentiment-network
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  # Grafana - Visualizzazione dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: sentiment-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./infrastructure/grafana/provisioning:/etc/grafana/provisioning
+      - ./infrastructure/grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - sentiment-network
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+networks:
+  sentiment-network:
+    driver: bridge
+
+volumes:
+  model-cache:
+  dataset-volume:
+  prometheus-data:
+  grafana-data:
