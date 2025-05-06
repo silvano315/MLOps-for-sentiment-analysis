@@ -13,14 +13,13 @@ COPY README.md .
 
 # Install needed packages in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip instal -e .
+RUN pip install -e .
 
 # Copy current directory contents
 COPY app/ ./app/
 COPY config/ ./config/
 COPY data/ ./data/
 COPY scripts/ ./scripts/
-COPY static/ ./static/
 COPY tests/ ./tests/
 
 # Make ports available to the world outside the container
@@ -29,9 +28,11 @@ EXPOSE 8080 8000
 # Define Environment variables
 ENV PYTHONPATH=/app
 ENV MODEL_CACHE_DIR=/app/models/cache
+ENV HF_HOME=/app/models/cache
 
-# Directory creation for cache and volume
-RUN mkdir -p /app/models/cache
+# Directory creation for static, cache and volume
+RUN mkdir -p /app/static
+RUN mkdir -p /app/models/cache && chmod -R 777 /app/models/cache
 RUN mkdir -p /app/data/datasets
 
 # User for security
@@ -39,4 +40,4 @@ RUN useradd -m appuser
 USER appuser
 
 # RUN app.py when the container launches
-CMD [ "uvicorn", "app.api.main::app", "--host", "0.0.0.0", "--port", "8080" ]
+CMD ["uvicorn", "app.api.main:app", "--host", "0.0.0.0", "--port", "8080"]

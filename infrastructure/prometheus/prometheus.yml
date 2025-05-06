@@ -12,5 +12,5 @@ scrape_configs:
     metrics_path : /metrics
 
   - job_name : 'prometheus'
-    statics_configs : 
+    static_configs : 
       - targets : ['localhost:9090']
