@@ -13,6 +13,9 @@ services:
     volumes:
       - model-cache:/app/models/cache
       - dataset-volume:/app/data/datasets
+      - model-cache:/app/models/cache
+      - dataset-volume:/app/data/datasets/cached
+      - ./results:/app/results
     environment:
       - METRICS_PORT=8000
     networks:
