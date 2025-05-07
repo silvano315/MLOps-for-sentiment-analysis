@@ -9,7 +9,7 @@ services:
     container_name: sentiment-api
     ports:
       - "8080:8080"  # API
-      - "8000:8000"  # Metriche Prometheus
+      - "8000:8000"  # Metrics Prometheus
     volumes:
       - model-cache:/app/models/cache
       - dataset-volume:/app/data/datasets
@@ -25,7 +25,7 @@ services:
       start_period: 40s
     restart: unless-stopped
 
-  # Prometheus - Raccolta metriche
+  # Prometheus
   prometheus:
     image: prom/prometheus:latest
     container_name: sentiment-prometheus
@@ -45,7 +45,7 @@ services:
       - api
     restart: unless-stopped
 
-  # Grafana - Visualizzazione dashboard
+  # Grafana
   grafana:
     image: grafana/grafana:latest
     container_name: sentiment-grafana
