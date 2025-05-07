@@ -39,5 +39,10 @@ RUN mkdir -p /app/data/datasets
 RUN useradd -m appuser
 USER appuser
 
+# Initialize Container to download and preprocess datasets
+COPY scripts/init_container.sh /app/scripts/init_container.sh
+RUN chmod +x /app/scripts/init_container.sh
+
 # RUN app.py when the container launches
+ENTRYPOINT [ "/app/scripts/init_container.sh" ]
 CMD ["uvicorn", "app.api.main:app", "--host", "0.0.0.0", "--port", "8080"]
