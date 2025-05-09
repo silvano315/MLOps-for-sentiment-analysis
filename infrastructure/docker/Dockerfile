@@ -34,6 +34,7 @@ ENV HF_HOME=/app/models/cache
 RUN mkdir -p /app/static
 RUN mkdir -p /app/models/cache && chmod -R 777 /app/models/cache
 RUN mkdir -p /app/data/datasets
+RUN mkdir -p /app/data/datasets/cached && chmod -R 777 /app/data/datasets/cached
 
 # Initialize Container to download and preprocess datasets
 COPY scripts/init_container.sh /app/scripts/init_container.sh
@@ -41,6 +42,7 @@ RUN chmod +x /app/scripts/init_container.sh
 
 # User for security
 RUN useradd -m appuser
+RUN mkdir -p /app/data/datasets/cached && chown -R appuser:appuser /app/data/datasets/cached
 USER appuser
 
 # RUN app.py when the container launches
