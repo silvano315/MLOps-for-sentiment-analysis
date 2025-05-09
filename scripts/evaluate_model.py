@@ -30,7 +30,7 @@ def evaluate_on_dataset(dataset_name, split="test", num_samples=None):
     logger.info(f"Evaluating model on {dataset_name} ({split} split)")
 
     datasets = download_and_prepare_datasets([dataset_name])
-    dataset_dict = dataset[dataset_name]
+    dataset_dict = datasets[dataset_name]
     dataset = dataset_dict["dataset"]
 
     from data.datasets.dataset_registry import get_dataset_config

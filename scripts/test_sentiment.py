@@ -39,7 +39,7 @@ def main():
         results = predict_sentiment(texts)
 
         if args.json:
-            print(json.dump(results, indent=2))
+            print(json.dumps(results, indent=2))
         else:
             for i, result in enumerate(results):
                 print(f"\nText {i+1}: {result['text']}")

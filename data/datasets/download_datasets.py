@@ -124,7 +124,7 @@ def preprocess_dataset(
     return dataset
 
 def download_and_prepare_datasets(
-    dataset_name : Optional[List[str]] = None,
+    dataset_names : Optional[List[str]] = None,
     save_dir : Optional[str] = None
 ) -> Dict[str, Dict[str, Any]]:
     """
