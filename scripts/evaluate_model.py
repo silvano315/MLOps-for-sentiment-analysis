@@ -15,7 +15,7 @@ from data.datasets.download_datasets import download_and_prepare_datasets
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-def evaluate_on_dataset(dataset_name, split="test", num_samples=None):
+def evaluate_on_dataset(dataset_name, split="test", num_samples=10):
     """
     Evaluate model on a specific dataset.
     
@@ -56,6 +56,10 @@ def evaluate_on_dataset(dataset_name, split="test", num_samples=None):
     # Extract texts and labels
     texts = samples[text_column]
 
+    for text in texts:
+        print(text)
+        print()
+    
     if dataset_name == "amazon_reviews_multi":
         true_labels = [label_mapping[sample["sentiment"]] for sample in samples]
     else:
@@ -85,7 +89,7 @@ def main():
     parser = argparse.ArgumentParser(description="Evaluate sentiment model on datasets")
     parser.add_argument("--dataset", default="tweet_eval", help = "Dataset to evaluate on")
     parser.add_argument("--split", default="test", help="Dataset split to use")
-    parser.add_argument("--samples", type=int, help="Number of samples to use")
+    parser.add_argument("--samples", type=int, default=10, help="Number of samples to use")
 
     args = parser.parse_args()
 
