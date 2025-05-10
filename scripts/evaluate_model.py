@@ -55,10 +55,6 @@ def evaluate_on_dataset(dataset_name, split="test", num_samples=10):
     
     # Extract texts and labels
     texts = samples[text_column]
-
-    for text in texts:
-        print(text)
-        print()
     
     if dataset_name == "amazon_reviews_multi":
         true_labels = [label_mapping[sample["sentiment"]] for sample in samples]
