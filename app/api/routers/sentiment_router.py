@@ -1,3 +1,4 @@
+import time
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from typing import Optional, Any, Dict, List
 
@@ -36,14 +37,19 @@ async def analyze_sentiment(
         SentimentResponse with the analysis results
     """
     try:
+        start_time = time.time()
+
         results = predict_sentiment(request.text)
         result = results[0]
+
+        prediction_time = time.time() - start_time
 
         background_tasks.add_task(
             record_prediction_metrics,
             text_length = len(request.text),
             sentiment = result["sentiment"],
-            confidence = result["confidence"]
+            confidence = result["confidence"],
+            prediction_time = prediction_time
         )
 
         return SentimentResponse(
@@ -85,14 +91,19 @@ async def analyze_sentiment_batch(
         )
     
     try:
+        start_time = time.time()
+
         results = predict_sentiment(request.texts)
+
+        prediction_time = time.time() - start_time
 
         for result in results:
             background_tasks.add_task(
                 record_prediction_metrics,
                 text_length=len(result["text"]),
                 sentiment=result["sentiment"],
-                confidence=result["confidence"]
+                confidence=result["confidence"],
+                prediction_time = prediction_time
             )
 
         response_items = [
