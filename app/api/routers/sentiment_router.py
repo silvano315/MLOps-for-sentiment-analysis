@@ -1,9 +1,10 @@
 import time
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
-from typing import Optional, Any, Dict, List
+from typing import Any, Dict, List, Optional
 
-from app.api.schemas.request import SentimentRequest, BatchSentimentRequest
-from app.api.schemas.response import SentimentResponse, BatchSentimentResponse
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+
+from app.api.schemas.request import BatchSentimentRequest, SentimentRequest
+from app.api.schemas.response import BatchSentimentResponse, SentimentResponse
 from app.models.prediction import predict_sentiment
 from app.monitoring.metrics import record_prediction_metrics
 

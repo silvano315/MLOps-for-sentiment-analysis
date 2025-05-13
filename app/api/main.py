@@ -1,15 +1,16 @@
-import time
 import logging
-from fastapi import FastAPI, Depends, Request
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any, Dict
 
-from app.api.routers import sentiment_router, health_router, admin_router
+from fastapi import Depends, FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+
 from app.api.middlewares.logging_middleware import LoggingMiddleware
+from app.api.routers import admin_router, health_router, sentiment_router
 from app.utils.config import get_settings
 
 logging.basicConfig(

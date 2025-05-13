@@ -1,9 +1,10 @@
-import os
 import logging
-import torch
+import os
 from pathlib import Path
-from typing import Any, Optional, Dict, List, Union
-from transformers import AutoModelForSequenceClassification, AutoTokenizer, AutoConfig
+from typing import Any, Dict, List, Optional, Union
+
+import torch
+from transformers import AutoConfig, AutoModelForSequenceClassification, AutoTokenizer
 
 from app.utils.config import get_settings
 

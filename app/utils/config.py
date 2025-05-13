@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Dict, Any
+from typing import Any, Dict
 
 from config.settings import Settings
 

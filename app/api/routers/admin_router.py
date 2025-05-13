@@ -1,7 +1,7 @@
 # app/api/routers/admin_router.py (versione minima)
 from fastapi import APIRouter, Response
 from fastapi.responses import HTMLResponse
-from prometheus_client import REGISTRY, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import CONTENT_TYPE_LATEST, REGISTRY, generate_latest
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 

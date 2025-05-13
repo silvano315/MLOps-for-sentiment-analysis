@@ -1,6 +1,7 @@
+from typing import Any, Dict, List, Union
+
 import torch
 from transformers import PreTrainedTokenizer
-from typing import Any, Dict, List, Union
 
 
 def tokenize_texts(

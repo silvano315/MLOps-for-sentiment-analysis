@@ -1,6 +1,7 @@
 import logging
-from fastapi import Header, Depends, Request, HTTPException
-from typing import Optional, Callable, Any, Dict
+from typing import Any, Callable, Dict, Optional
+
+from fastapi import Depends, Header, HTTPException, Request
 
 from app.utils.config import get_settings
 

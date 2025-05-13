@@ -1,11 +1,12 @@
 import logging
 import time
-import torch
-import numpy as np
-from torch.nn.functional import softmax
-from typing import Optional, Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
-from app.models.model_loader import get_model, SentimentModel
+import numpy as np
+import torch
+from torch.nn.functional import softmax
+
+from app.models.model_loader import SentimentModel, get_model
 from app.models.tokenization import tokenize_texts
 
 logger = logging.getLogger(__name__)

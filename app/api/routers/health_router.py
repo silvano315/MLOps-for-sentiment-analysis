@@ -1,9 +1,10 @@
-import time
-import psutil
 import platform
+import time
+from typing import Any, Dict
+
+import psutil
 import torch
 from fastapi import APIRouter, Depends, HTTPException
-from typing import Any, Dict
 
 from app.utils.config import get_settings
 

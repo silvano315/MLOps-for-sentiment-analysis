@@ -1,6 +1,7 @@
 import logging
-from datasets import load_datasets, Dataset, DatasetDict
-from typing import Optional, Any, Dict, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union
+
+from datasets import Dataset, DatasetDict, load_datasets
 
 from app.utils.config import get_settings
 

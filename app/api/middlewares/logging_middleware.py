@@ -1,9 +1,10 @@
-import time
-import logging
 import json
+import logging
+import time
+from typing import Callable
+
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
-from typing import Callable
 
 logger = logging.getLogger(__name__)
 
