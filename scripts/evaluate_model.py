@@ -1,15 +1,15 @@
+import argparse
+import logging
 import os
 import sys
-import logging
-import argparse
 from pathlib import Path
 
 # PYTHONPATH
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from app.models.evaluation import evaluate_predictions
 from app.models.model_loader import get_model
 from app.models.prediction import predict_sentiment
-from app.models.evaluation import evaluate_predictions
 from data.datasets.download_datasets import download_and_prepare_datasets
 
 logging.basicConfig(
