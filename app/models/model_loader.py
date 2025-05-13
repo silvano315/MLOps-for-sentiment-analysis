@@ -1,7 +1,5 @@
 import logging
-import os
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import List, Optional, Union
 
 import torch
 from transformers import AutoConfig, AutoModelForSequenceClassification, AutoTokenizer
@@ -21,7 +19,7 @@ class SentimentModel:
 
     def __init__(
         self,
-        model_name: str = None,
+        model_name: Optional[str] = None,
         cache_dir: Optional[str] = None,
         device: Optional[str] = None,
     ):
@@ -77,7 +75,7 @@ class SentimentModel:
         self.id2label = {0: "negative", 1: "neutral", 2: "positive"}
         self.label2id = {v: k for k, v in self.id2label.items()}
 
-    def predict(self, texts: Union[str, List[str]]) -> List[Dict[str, Any]]:
+    def predict(self, texts: Union[str, List[str]]) -> None:  # List[Dict[str, Any]]:
         """
         Perform sentiment analysis on text(s).
 

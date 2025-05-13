@@ -1,9 +1,7 @@
 import logging
-import threading
-import time
-from typing import Any, Dict, Optional
+from typing import Optional
 
-from prometheus_client import Counter, Gauge, Histogram, Summary, start_http_server
+from prometheus_client import Counter, Histogram, start_http_server
 
 logger = logging.getLogger(__name__)
 

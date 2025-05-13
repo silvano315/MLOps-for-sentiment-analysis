@@ -1,7 +1,6 @@
 import time
-from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException
 
 from app.api.schemas.request import BatchSentimentRequest, SentimentRequest
 from app.api.schemas.response import BatchSentimentResponse, SentimentResponse
@@ -66,7 +65,7 @@ async def analyze_sentiment(
 )
 async def analyze_sentiment_batch(
     request: BatchSentimentRequest, background_tasks: BackgroundTasks
-) -> SentimentResponse:
+) -> BatchSentimentResponse:
     """
     Analyze the sentiment of multiple texts.
 

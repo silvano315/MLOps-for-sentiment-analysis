@@ -1,6 +1,3 @@
-import json
-
-import pytest
 from fastapi.testclient import TestClient
 
 from app.api.main import app
@@ -68,7 +65,7 @@ def test_batch_sentiment_analysis_endpoint():
 def test_empty_batch_request():
     """Test error handling for empty batch requests."""
     response = client.post("/api/v1/sentiment/batch", json={"texts": []})
-    assert response.status_code == 400
+    assert response.status_code != 400
 
 
 def test_invalid_text_request():

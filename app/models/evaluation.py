@@ -1,6 +1,5 @@
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List
 
-import numpy as np
 from sklearn.metrics import (
     accuracy_score,
     confusion_matrix,

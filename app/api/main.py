@@ -2,9 +2,8 @@ import logging
 import time
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Any, Dict
 
-from fastapi import Depends, FastAPI, Request
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -41,10 +40,6 @@ app.add_middleware(LoggingMiddleware)
 app.include_router(health_router.router, tags=["Health"])
 app.include_router(sentiment_router.router, prefix="/api/v1", tags=["Sentiment"])
 app.include_router(admin_router.router, tags=["Admin"])
-
-# Just for debugging
-for route in app.router.routes:
-    print(f"Route: {route.path} → {route.name}")
 
 static_dir = Path(__file__).parent.parent.parent / "static"
 static_dir.mkdir(exist_ok=True)

@@ -1,5 +1,3 @@
-import pytest
-
 from app.models.model_loader import SentimentModel
 from app.models.prediction import predict_sentiment
 

@@ -58,7 +58,7 @@ class SentimentPredictor:
 
         probabilities = softmax(torch.Tensor(logits), dim=1).numpy()
 
-        for i, (text, probs) in enumerate(zip(texts, probabilities)):
+        for _, (text, probs) in enumerate(zip(texts, probabilities)):
             predicted_class = int(np.argmax(probs))
             sentiment = self.model.id2label[predicted_class]
 
