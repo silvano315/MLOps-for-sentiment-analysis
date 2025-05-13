@@ -9,10 +9,11 @@ from app.utils.config import get_settings
 
 logger = logging.getLogger(__name__)
 
+
 class SentimentModel:
     """
     Class for loading and managing the sentiment analysis model.
-    
+
     This class handles loading the pre-trained RoBERTa model from HuggingFace,
     and provides methods for tokenization and inference.
     """
@@ -21,11 +22,11 @@ class SentimentModel:
         self,
         model_name: str = None,
         cache_dir: Optional[str] = None,
-        device: Optional[str] = None
+        device: Optional[str] = None,
     ):
         """
         Initialize the sentiment model.
-        
+
         Args:
             model_name: Name or path of the pre-trained model
             cache_dir: Directory to store the downloaded model
@@ -48,22 +49,19 @@ class SentimentModel:
         """Load the model and tokenizer from HuggingFace."""
 
         logger.info(f"Loading model: {self.model_name}")
-        
+
         try:
             self.config = AutoConfig.from_pretrained(
-                self.model_name,
-                cache_dir = self.cache_dir
+                self.model_name, cache_dir=self.cache_dir
             )
 
             self.model = AutoModelForSequenceClassification.from_pretrained(
-                self.model_name,
-                cache_dir = self.cache_dir
+                self.model_name, cache_dir=self.cache_dir
             )
             self.model.to(self.device)
 
             self.tokenizer = AutoTokenizer.from_pretrained(
-                self.model_name,
-                cache_dir = self.cache_dir
+                self.model_name, cache_dir=self.cache_dir
             )
 
             logger.info("model loaded successfully")
@@ -75,32 +73,30 @@ class SentimentModel:
         """Load label mapping for the model."""
         # [From HugginFace] Labels: 0 -> Negative; 1 -> Neutral; 2 -> Positive
 
-        self.id2label = {
-            0 : "negative",
-            1 : "neutral",
-            2 : "positive"
-        }
-        self.label2id = {v : k for k, v in self.id2label.items()}
+        self.id2label = {0: "negative", 1: "neutral", 2: "positive"}
+        self.label2id = {v: k for k, v in self.id2label.items()}
 
-    def predict (self, texts: Union[str, List[str]]) -> List[Dict[str, Any]]:
+    def predict(self, texts: Union[str, List[str]]) -> List[Dict[str, Any]]:
         """
         Perform sentiment analysis on text(s).
-        
+
         Args:
             texts: A single text or list of texts to analyze
-            
+
         Returns:
             List of dictionaries containing sentiment predictions for each text
         """
         # This is a placeholder: implementation in app/model/prediction.py
         pass
 
+
 _model_instance = None
+
 
 def get_model() -> SentimentModel:
     """
     Get or create a singleton instance of the sentiment model.
-    
+
     Returns:
         Sentiment model instance
     """

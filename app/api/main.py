@@ -13,33 +13,32 @@ from app.api.middlewares.logging_middleware import LoggingMiddleware
 from app.utils.config import get_settings
 
 logging.basicConfig(
-    level = logging.INFO,
-    format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 settings = get_settings()
 
 app = FastAPI(
-    title = settings.API_TITLE,
-    description = settings.API_DESCRIPTION,
-    version = settings.API_VERSION,
-    docs_url = "/docs",
-    redoc_url = "/redoc"
+    title=settings.API_TITLE,
+    description=settings.API_DESCRIPTION,
+    version=settings.API_VERSION,
+    docs_url="/docs",
+    redoc_url="/redoc",
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins = ["*"],
-    allow_credentials = True,
-    allow_methods = ["*"],
-    allow_headers = ["*"]
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.add_middleware(LoggingMiddleware)
 
-app.include_router(health_router.router, tags = ["Health"])
-app.include_router(sentiment_router.router, prefix = "/api/v1", tags = ["Sentiment"])
+app.include_router(health_router.router, tags=["Health"])
+app.include_router(sentiment_router.router, prefix="/api/v1", tags=["Sentiment"])
 app.include_router(admin_router.router, tags=["Admin"])
 
 # Just for debugging
@@ -49,10 +48,11 @@ for route in app.router.routes:
 static_dir = Path(__file__).parent.parent.parent / "static"
 static_dir.mkdir(exist_ok=True)
 
-app.mount("/static", StaticFiles(directory = static_dir), name = "static")
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
-@app.get("/", response_class = HTMLResponse)
-async def get_ui(request : Request):
+
+@app.get("/", response_class=HTMLResponse)
+async def get_ui(request: Request):
     """Serve the main UI page."""
     html_content = """
     <!DOCTYPE html>
@@ -196,6 +196,7 @@ async def get_ui(request : Request):
     """
     return HTMLResponse(content=html_content)
 
+
 def startup_event():
     """
     Execute operations on application startup.
@@ -205,15 +206,18 @@ def startup_event():
     start_time = time.time()
 
     from app.models.model_loader import get_model
+
     get_model()
 
     logger.info(f"Startup completed in {time.time() - start_time:.2f} seconds")
+
 
 def shutdown_event():
     """
     Execute operations on application shutdown.
     """
     logger.info("Shutting down sentiment analysis API")
+
 
 @asynccontextmanager
 async def lifespan():

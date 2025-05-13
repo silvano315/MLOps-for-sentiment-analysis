@@ -6,13 +6,14 @@ from app.utils.config import get_settings
 
 logger = logging.getLogger(__name__)
 
+
 class DatasetLoader:
     """Class for loading and managing datasets for sentiment analysis."""
 
     def load_primary_dataset(self) -> Union[Dataset, DatasetDict]:
         """
         Load the primary dataset (TweetEval).
-        
+
         Returns:
             Dataset or DatasetDict object
         """
@@ -20,8 +21,7 @@ class DatasetLoader:
         try:
             logger.info(f"Loading primary dataset: {self.settings.PRIMARY_DATASET}")
             dataset = load_datasets(
-                self.settings.PRIMARY_DATASET,
-                self.settings.PRIMARY_DATASET_CONFIG
+                self.settings.PRIMARY_DATASET, self.settings.PRIMARY_DATASET_CONFIG
             )
             logger.info("Primary dataset loaded successfully")
             return dataset
@@ -32,7 +32,7 @@ class DatasetLoader:
     def load_secondary_dataset(self) -> Union[Dataset, DatasetDict]:
         """
         Load the secondary dataset (Amazon Reviews).
-        
+
         Returns:
             Dataset or DatasetDict object
         """
@@ -40,8 +40,7 @@ class DatasetLoader:
         try:
             logger.info(f"Loading secondary dataset: {self.settings.SECONDARY_DATASET}")
             dataset = load_datasets(
-                self.settings.SECONDARY_DATASET,
-                self.settings.SECONDARY_DATASET_CONFIG
+                self.settings.SECONDARY_DATASET, self.settings.SECONDARY_DATASET_CONFIG
             )
             logger.info(f"Secondary dataset loaded successfully")
             return dataset
@@ -51,18 +50,18 @@ class DatasetLoader:
 
     def get_dataset_sample(
         self,
-        dataset : Union[Dataset, DatasetDict],
-        split : str = "train",
-        sample_size : int = 5
+        dataset: Union[Dataset, DatasetDict],
+        split: str = "train",
+        sample_size: int = 5,
     ) -> Dataset:
         """
         Get a small sample from a dataset for quick testing.
-        
+
         Args:
             dataset: Dataset to sample from
             split: Dataset split to use
             sample_size: Number of samples to retrieve
-            
+
         Returns:
             Dataset containing samples
         """

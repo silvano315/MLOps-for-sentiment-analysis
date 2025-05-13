@@ -5,20 +5,22 @@ from prometheus_client import REGISTRY, generate_latest, CONTENT_TYPE_LATEST
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
+
 @router.get(
-    "/metrics", 
+    "/metrics",
     summary="Raw Prometheus metrics",
-    description="Get raw Prometheus metrics"
+    description="Get raw Prometheus metrics",
 )
 async def metrics():
     """Return raw Prometheus metrics."""
     return Response(generate_latest(REGISTRY), media_type=CONTENT_TYPE_LATEST)
 
+
 @router.get(
     "/dashboard",
     response_class=HTMLResponse,
     summary="Simple metrics dashboard",
-    description="View a simple dashboard of sentiment analysis metrics"
+    description="View a simple dashboard of sentiment analysis metrics",
 )
 async def simple_dashboard():
     """Simple HTML dashboard for metrics."""

@@ -2,13 +2,11 @@ import os
 from typing import Dict, Any, Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
     "Application settings"
 
-    model_config = SettingsConfigDict(
-        env_file = ".venv",
-        env_file_encoding = "utf-8"
-    )
+    model_config = SettingsConfigDict(env_file=".venv", env_file_encoding="utf-8")
 
     # API configuration
     API_TITLE: str = "Sentiment Analysis API"
@@ -23,7 +21,7 @@ class Settings(BaseSettings):
     PRIMARY_DATASET: str = "tweet_eval"
     PRIMARY_DATASET_CONFIG: str = "sentiment"
     SECONDARY_DATASET: str = "amazon_reviews_multi"
-    SECONDARY_DATASET_CONFIG: str = "en" 
+    SECONDARY_DATASET_CONFIG: str = "en"
 
     # Monitoring configuration
     METRICS_PORT: int = 8000
@@ -32,5 +30,5 @@ class Settings(BaseSettings):
     RAPIDAPI_KEY: Optional[str] = None
     TWITTER_API_HOST: str = "twitter154.p.rapidapi.com"
 
-settings = Settings()
 
+settings = Settings()

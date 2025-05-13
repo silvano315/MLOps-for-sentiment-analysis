@@ -2,10 +2,12 @@ import pytest
 from data.datasets.download_datasets import download_dataset
 from app.models.prediction import predict_sentiment
 
+
 def test_tweet_eval_download_and_preprocess():
     """Test downloading and preprocessing the TweetEval dataset."""
 
     import tempfile
+
     with tempfile.TemporaryDirectory() as tmp_dir:
         result = download_dataset("tweet_eval", "sentiment", tmp_dir)
 
@@ -18,6 +20,7 @@ def test_tweet_eval_download_and_preprocess():
             sample = dataset["train"][0]
             assert "text" in sample
             assert "label" in sample
+
 
 def test_model_prediction_on_tweet_eval():
     """Test model prediction on TweetEval samples."""
