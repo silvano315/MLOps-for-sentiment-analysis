@@ -10,6 +10,8 @@ def main():
     space_name = os.environ.get("HF_SPACE_NAME")
     docker_image = os.environ.get("DOCKER_IMAGE")
 
+    docker_image = docker_image.lower()
+
     if not all([username, space_name, docker_image]):
         print("Error: Missing required environment variables")
         print("Make sure HF_USERNAME, HF_SPACE_NAME, and DOCKER_IMAGE are set")
