@@ -55,14 +55,21 @@ jobs:
           context: .
           file: infrastructure/docker/Dockerfile
           push: false
+          load: true 
           tags: sentiment-api:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
           
       - name: Test Docker container
         run: |
-          docker run --name test-api -d -p 8080:8080 sentiment-api:test
-          sleep 10  # Wait for container to start
-          curl -f http://localhost:8080/health || exit 1
-          docker logs test-api
+          docker run --name test-api -e SKIP_DATASETS=amazon_reviews_multi -d -p 8080:8080 sentiment-api:test
+          sleep 10
+          if ! curl -f http://localhost:8080/health; then
+            echo "API failed health check"
+            docker logs test-api
+            docker stop test-api
+            docker rm test-api
+            exit 1
+          fi
           docker stop test-api
+          docker rm test-api

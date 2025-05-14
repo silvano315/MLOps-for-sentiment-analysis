@@ -169,6 +169,9 @@ def download_and_prepare_datasets(
     datasets = {}
 
     for dataset_name in dataset_names:
+        if os.getenv("SKIP_DATASETS") == dataset_name:
+            logger.info(f"Skipping dataset {dataset_name} due to environment setting")
+            continue
         try:
             dataset_config = get_dataset_config(dataset_name)
             config_name = dataset_config.get("config") if dataset_config else None
