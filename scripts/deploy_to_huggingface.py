@@ -8,9 +8,7 @@ def main():
     """Main deployment function"""
     username = os.environ.get("HF_USERNAME")
     space_name = os.environ.get("HF_SPACE_NAME")
-    docker_image = os.environ.get("DOCKER_IMAGE")
-
-    docker_image = docker_image.lower()
+    docker_image = os.environ.get("DOCKER_IMAGE").lower()
 
     if not all([username, space_name, docker_image]):
         print("Error: Missing required environment variables")
