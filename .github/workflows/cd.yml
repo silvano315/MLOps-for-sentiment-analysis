@@ -34,6 +34,15 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=ref,event=branch
             type=sha
+
+      - name: Make GHCR package public
+        run: |
+          echo "Making package public..."
+          curl -X PATCH \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GHCR_PAT }}" \
+            https://api.github.com/user/packages/container/sentiment-api/visibility \
+            -d '{"visibility":"public"}' || echo "Package may not exist yet, will be created on push"
             
       - name: Build and push API image
         uses: docker/build-push-action@v4
@@ -72,4 +81,4 @@ jobs:
         env:
           HF_USERNAME: ${{ secrets.HF_USERNAME }}
           HF_SPACE_NAME: sentiment-analysis-api
-          DOCKER_IMAGE: ghcr.io/${{ github.repository }}/sentiment-api:sha-${{ github.sha }}
+          DOCKER_IMAGE: ghcr.io/${{ github.repository_owner }}/sentiment-api:sha-${{ github.sha }}
