@@ -28,7 +28,7 @@ app = FastAPI(
     version=settings.API_VERSION,
     docs_url="/docs",
     redoc_url="/redoc",
-    root_path = "/spaces/" + os.environ.get("SPACE_NAME", "") if is_huggingface else "",
+    root_path="/spaces/" + os.environ.get("SPACE_NAME", "") if is_huggingface else "",
 )
 
 app.add_middleware(

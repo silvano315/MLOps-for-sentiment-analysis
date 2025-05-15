@@ -23,28 +23,28 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PAT }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
           
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository_owner }}/sentiment-api 
+          images: |
+            ghcr.io/${{ github.repository_owner }}/sentiment-api
+            ${{ secrets.DOCKERHUB_USERNAME }}/sentiment-api
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=ref,event=branch
             type=sha,format=long
 
-      - name: Make GHCR package public
-        run: |
-          echo "Making package public..."
-          curl -X PATCH \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: Bearer ${{ secrets.GHCR_PAT }}" \
-            https://api.github.com/users/silvano315/packages/container/sentiment-api/visibility \
-            -d '{"visibility":"public"}'
-
       - name: Build and push API image
+        id: docker_build
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -74,6 +74,15 @@ jobs:
       - name: Login to Hugging Face
         run: |
           huggingface-cli login --token ${{ secrets.HF_TOKEN }}
+
+      - name: Set Docker image
+        id: set_image
+        run: |
+          if [ "${{ secrets.USE_DOCKERHUB }}" == "true" ]; then
+            echo "DOCKER_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/sentiment-api:sha-${{ github.sha }}" >> $GITHUB_OUTPUT
+          else
+            echo "DOCKER_IMAGE=ghcr.io/${{ github.repository_owner }}/sentiment-api:sha-${{ github.sha }}" >> $GITHUB_OUTPUT
+          fi
           
       - name: Deploy to Hugging Face Spaces
         run: |
@@ -81,4 +90,4 @@ jobs:
         env:
           HF_USERNAME: ${{ secrets.HF_USERNAME }}
           HF_SPACE_NAME: sentiment-analysis-api
-          DOCKER_IMAGE: ghcr.io/${{ github.repository_owner }}/sentiment-api:sha-${{ github.sha }}
+          DOCKER_IMAGE: ${{ steps.set_image.outputs.DOCKER_IMAGE }}
