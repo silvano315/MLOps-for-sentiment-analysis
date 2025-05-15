@@ -29,8 +29,17 @@ def main():
             private=False,
         )
 
+    dockerfile_content = f"""FROM {docker_image}
+
+    EXPOSE 7860
+    ENV PORT=7860
+    ENV ROOT_PATH=/
+
+    CMD ["uvicorn", "app.api.main:app", "--host", "0.0.0.0", "--port", "7860"]
+    """
+
     with open("Dockerfile", "w") as f:
-        f.write(f"FROM {docker_image}\n")
+        f.write(dockerfile_content)
 
     api.upload_file(
         path_or_fileobj="Dockerfile",

@@ -1,5 +1,6 @@
 import logging
 import time
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -19,12 +20,15 @@ logger = logging.getLogger(__name__)
 
 settings = get_settings()
 
+is_huggingface = os.environ.get("SPACE_ID") is not None
+
 app = FastAPI(
     title=settings.API_TITLE,
     description=settings.API_DESCRIPTION,
     version=settings.API_VERSION,
     docs_url="/docs",
     redoc_url="/redoc",
+    root_path = "/spaces/" + os.environ.get("SPACE_NAME", "") if is_huggingface else "",
 )
 
 app.add_middleware(
