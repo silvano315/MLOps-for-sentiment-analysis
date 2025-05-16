@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import torch
 from transformers import AutoConfig, AutoModelForSequenceClassification, AutoTokenizer
@@ -74,6 +74,23 @@ class SentimentModel:
 
         self.id2label = {0: "negative", 1: "neutral", 2: "positive"}
         self.label2id = {v: k for k, v in self.id2label.items()}
+
+    @classmethod
+    def list_available_models(cls) -> Dict[str, Dict[str, Any]]:
+        """
+        List available pre-trained models that can be used.
+
+        Returns:
+            Dictionary of model information
+        """
+        return {
+            "cardiffnlp/twitter-roberta-base-sentiment-latest": {
+                "name": "Twitter RoBERTa Base Sentiment",
+                "description": "RoBERTa model fine-tuned on Twitter data for sentiment analysis",
+                "type": "roberta",
+                "languages": ["en"],
+            },
+        }
 
     def predict(self, texts: Union[str, List[str]]) -> None:  # List[Dict[str, Any]]:
         """

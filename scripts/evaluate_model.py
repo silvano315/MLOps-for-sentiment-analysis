@@ -1,5 +1,6 @@
 import argparse
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -7,8 +8,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from app.models.evaluation import evaluate_predictions
-from app.models.model_loader import get_model
 from app.models.prediction import predict_sentiment
+from app.monitoring.model_metrics import record_model_evaluation_metrics
 from data.datasets.download_datasets import download_and_prepare_datasets
 
 logging.basicConfig(
@@ -72,6 +73,16 @@ def evaluate_on_dataset(dataset_name, split="test", num_samples=10):
     predicted_labels = [pred["sentiment"] for pred in predictions]
 
     metrics = evaluate_predictions(true_labels, predicted_labels)
+
+    model_name = os.environ.get(
+        "MODEL_NAME", "cardiffnlp/twitter-roberta-base-sentiment-latest"
+    )
+    record_model_evaluation_metrics(
+        evaluation_results=metrics,
+        model_name=model_name,
+        dataset=dataset_name,
+        split=split,
+    )
 
     logger.info(f"Evaluation results for {dataset_name}:")
     logger.info(f"Accuracy: {metrics['accuracy']:.4f}")

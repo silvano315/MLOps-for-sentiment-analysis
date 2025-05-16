@@ -1,5 +1,3 @@
-import pytest
-
 from app.models.prediction import predict_sentiment
 from data.datasets.download_datasets import download_dataset
 

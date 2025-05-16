@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 
-from prometheus_client import Counter, Histogram, start_http_server
+from prometheus_client import Counter, Gauge, Histogram, start_http_server
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +27,36 @@ CONFIDENCE_HISTOGRAM = Histogram(
     "sentiment_confidence",
     "Confidence of sentiment predictions",
     buckets=(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99),
+)
+
+MODEL_ACCURACY = Gauge(
+    "model_accuracy",
+    "Accyracy of the sentiment model",
+    ["model_name", "dataset", "split"],
+)
+
+MODEL_PRECISION = Gauge(
+    "model_precision",
+    "Precision of the sentiment model",
+    ["model_name", "dataset", "split", "class_label", "average"],
+)
+
+MODEL_RECALL = Gauge(
+    "model_recall",
+    "Recall of the sentiment model",
+    ["model_name", "dataset", "split", "class_label", "average"],
+)
+
+MODEL_F1 = Gauge(
+    "model_f1",
+    "F1 score of the sentiment model",
+    ["model_name", "dataset", "split", "class_label", "average"],
+)
+
+MODEL_CONFUSION_MATRIX = Gauge(
+    "model_confusion_matrix",
+    "Confusion matrix values of the sentiment model",
+    ["model_name", "dataset", "split", "true_label", "predicted_label"],
 )
 
 metrics_server = None
