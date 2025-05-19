@@ -10,7 +10,12 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.api.middlewares.logging_middleware import LoggingMiddleware
-from app.api.routers import admin_router, evaluation_router, health_router, sentiment_router
+from app.api.routers import (
+    admin_router,
+    evaluation_router,
+    health_router,
+    sentiment_router,
+)
 from app.utils.config import get_settings
 
 logging.basicConfig(
