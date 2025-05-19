@@ -10,7 +10,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.api.middlewares.logging_middleware import LoggingMiddleware
-from app.api.routers import admin_router, health_router, sentiment_router
+from app.api.routers import admin_router, evaluation_router, health_router, sentiment_router
 from app.utils.config import get_settings
 
 logging.basicConfig(
@@ -42,6 +42,7 @@ app.add_middleware(
 app.add_middleware(LoggingMiddleware)
 
 app.include_router(health_router.router, tags=["Health"])
+app.include_router(evaluation_router.router, prefix="/api/v1", tags=["Evaluation"])
 app.include_router(sentiment_router.router, prefix="/api/v1", tags=["Sentiment"])
 app.include_router(admin_router.router, tags=["Admin"])
 

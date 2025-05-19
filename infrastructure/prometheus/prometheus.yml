@@ -7,9 +7,9 @@ global:
 scrape_configs:
   - job_name : 'sentiment-api'
     static_configs :
-      - targets : ['api:8000']
-    #metrics_path : /admin/metrics
-    metrics_path : /metrics
+      - targets : ['api:8080']
+    metrics_path : /admin/metrics
+    #metrics_path : /metrics
 
   - job_name : 'prometheus'
     static_configs : 

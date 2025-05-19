@@ -31,7 +31,7 @@ CONFIDENCE_HISTOGRAM = Histogram(
 
 MODEL_ACCURACY = Gauge(
     "model_accuracy",
-    "Accyracy of the sentiment model",
+    "Accuracy of the sentiment model",
     ["model_name", "dataset", "split"],
 )
 
