@@ -74,15 +74,18 @@ def evaluate_on_dataset(dataset_name, split="test", num_samples=10):
 
     metrics = evaluate_predictions(true_labels, predicted_labels)
 
-    model_name = os.environ.get(
-        "MODEL_NAME", "cardiffnlp/twitter-roberta-base-sentiment-latest"
-    )
-    record_model_evaluation_metrics(
-        evaluation_results=metrics,
-        model_name=model_name,
-        dataset=dataset_name,
-        split=split,
-    )
+    try:
+        model_name = os.environ.get("MODEL_NAME", "cardiffnlp/twitter-roberta-base-sentiment-latest")
+        
+        record_model_evaluation_metrics(
+            evaluation_results=metrics,
+            model_name=model_name,
+            dataset=dataset_name,
+            split=split
+        )
+        logger.info(f"Metrics recorded to Prometheus for model {model_name}")
+    except Exception as e:
+        logger.error(f"Failed to record metrics to Prometheus: {str(e)}")
 
     logger.info(f"Evaluation results for {dataset_name}:")
     logger.info(f"Accuracy: {metrics['accuracy']:.4f}")
