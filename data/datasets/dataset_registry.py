@@ -11,16 +11,16 @@ DATASET_REGISTRY = {
         "text_column": "text",
         "label_column": "label",
     },
-    "amazon_reviews_multi": {
-        "name": "amazon_reviews_multi",
+    "mteb/amazon_reviews_multi": {
+        "name": "mteb/amazon_reviews_multi",
         "config": "en",
         "label_mapping": {
-            1: "negative",  # Stars 1-2 -> negative
-            3: "neutral",  # Stars 3 -> neutral
-            5: "positive",  # Stars 4-5 -> positive
+            0: "negative",  # Stars 1-2 -> negative
+            1: "neutral",  # Stars 3 -> neutral
+            2: "positive",  # Stars 4-5 -> positive
         },
-        "text_column": "review_body",
-        "label_column": "stars",
+        "text_column": "text",
+        "label_column": "label",
         "preprocessing": "map_amazon_stars",
     },
 }
@@ -49,15 +49,15 @@ def map_amazon_stars(stars: int) -> int:
     Map Amazon review stars to sentiment classes.
 
     Args:
-        stars: Amazon review stars (1-5)
+        stars: Amazon review stars (0-4)
 
     Returns:
         Sentiment class (0=negative, 1=neutral, 2=positive)
     """
 
-    if stars <= 2:
+    if stars <= 1:
         return 0  # negative
-    elif stars == 3:
+    elif stars == 2:
         return 1  # neutral
     else:
         return 2  # positive

@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     # Data configuration
     PRIMARY_DATASET: str = "tweet_eval"
     PRIMARY_DATASET_CONFIG: str = "sentiment"
-    SECONDARY_DATASET: str = "amazon_reviews_multi"
+    SECONDARY_DATASET: str = "mteb/amazon_reviews_multi"
     SECONDARY_DATASET_CONFIG: str = "en"
 
     # Monitoring configuration

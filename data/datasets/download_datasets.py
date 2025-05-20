@@ -74,10 +74,16 @@ def download_dataset(
                 "path": save_path,
             }
 
-            info_path = os.path.join(
-                save_path,
-                f"{dataset_name}_{config_name if config_name else 'default'}_info.json",
-            )
+            if dataset_name == "mteb/amazon_reviews_multi":
+                info_path = os.path.join(
+                    save_path,
+                    f"{dataset_name.split("/")[1]}_{config_name if config_name else 'default'}_info.json",
+                )
+            else:
+                info_path = os.path.join(
+                    save_path,
+                    f"{dataset_name}_{config_name if config_name else 'default'}_info.json",
+                )
             with open(info_path, "w") as f:
                 import json
 
@@ -118,7 +124,7 @@ def preprocess_dataset(dataset: Dict[str, Any], dataset_name: str) -> Dict[str, 
         return dataset
 
     # Apply preprocessing
-    if dataset_name == "amazon_reviews_multi" and "preprocessing" in dataset_config:
+    if dataset_name == "mteb/amazon_reviews_multi" and "preprocessing" in dataset_config:
         if dataset_config["preprocessing"] == "map_amazon_stars":
             logger.info("Applying Amazon stars mapping")
 

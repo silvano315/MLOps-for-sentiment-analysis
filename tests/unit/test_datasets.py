@@ -7,7 +7,7 @@ def test_dataset_registry_contains_expected_datasets():
     from data.datasets.dataset_registry import DATASET_REGISTRY
 
     assert "tweet_eval" in DATASET_REGISTRY
-    assert "amazon_reviews_multi" in DATASET_REGISTRY
+    assert "mteb/amazon_reviews_multi" in DATASET_REGISTRY
 
 
 def test_get_dataset_config_returns_correct_config():
@@ -24,8 +24,8 @@ def test_get_dataset_config_returns_correct_config():
 def test_map_amazon_stars_functions_correctly():
     """Test that map_amazon_stars maps stars correctly."""
 
+    assert map_amazon_stars(0) == 0
     assert map_amazon_stars(1) == 0
-    assert map_amazon_stars(2) == 0
-    assert map_amazon_stars(3) == 1
+    assert map_amazon_stars(2) == 1
+    assert map_amazon_stars(3) == 2
     assert map_amazon_stars(4) == 2
-    assert map_amazon_stars(5) == 2
