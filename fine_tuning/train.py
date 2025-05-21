@@ -29,6 +29,7 @@ def run_training(
     num_epochs=3,
     batch_size=8,
     learning_rate=2e-5,
+    split_ratio=0.2,
     lora_r=8,
     lora_alpha=16,
     push_to_hub=False,
@@ -39,7 +40,7 @@ def run_training(
     mlflow.set_experiment("sentiment-analysis-fine-tuning-amazon")
 
     with mlflow.start_run() as run:
-        mlflow.log_param({
+        mlflow.log_params({
             "base_model": base_model,
             "dataset": dataset_name,
             "num_epochs": num_epochs,
@@ -103,21 +104,26 @@ def run_training(
         per_device_eval_batch_size=batch_size,
         num_train_epochs=num_epochs,
         weight_decay=0.01,
-        evaluation_strategy="epoch",
+        eval_strategy="epoch",
         save_strategy="epoch",
         load_best_model_at_end=True,
         push_to_hub=push_to_hub,
         report_to="mlflow",
+        label_names=["labels"],
     )
 
     if push_to_hub and hf_token:
         HfFolder.save_token(hf_token)
 
+    # I want to use just a % of training/test dataset
+    train_dataset_reduced = tokenized_datasets["train"].shuffle(seed=42).select(range(int(split_ratio * len(tokenized_datasets["train"]))))
+    test_dataset_reduced = tokenized_datasets["test"].shuffle(seed=42).select(range(int(split_ratio * len(tokenized_datasets["test"]))))
+
     trainer = Trainer(
         model=model,
         args=training_args,
-        train_dataset=tokenized_datasets["train"],
-        eval_dataset=tokenized_datasets["test"],
+        train_dataset=train_dataset_reduced,
+        eval_dataset=test_dataset_reduced,
         tokenizer=tokenizer,
         data_collator=DataCollatorWithPadding(tokenizer),
         compute_metrics=compute_metrics,
