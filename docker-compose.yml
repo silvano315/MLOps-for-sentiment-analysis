@@ -66,6 +66,62 @@ services:
       - prometheus
     restart: unless-stopped
 
+  airflow-webserver:
+    image: apache/airflow:2.6.3
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=True
+    ports:
+      - "8088:8080"
+    volumes:
+      - ./infrastructure/airflow/dags:/opt/airflow/dags
+      - ./infrastructure/airflow/logs:/opt/airflow/logs
+      - ./infrastructure/airflow/plugins:/opt/airflow/plugins
+    depends_on:
+      - postgres
+    networks:
+      - sentiment-network
+    command: webserver
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+  airflow-scheduler:
+    image: apache/airflow:2.6.3
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    volumes:
+      - ./infrastructure/airflow/dags:/opt/airflow/dags
+      - ./infrastructure/airflow/logs:/opt/airflow/logs
+      - ./infrastructure/airflow/plugins:/opt/airflow/plugins
+    depends_on:
+      - postgres
+    networks:
+      - sentiment-network
+    command: scheduler
+    restart: always
+
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    networks:
+      - sentiment-network
+    restart: always
+
 networks:
   sentiment-network:
     driver: bridge
@@ -75,3 +131,4 @@ volumes:
   dataset-volume:
   prometheus-data:
   grafana-data:
+  postgres-db-volume:

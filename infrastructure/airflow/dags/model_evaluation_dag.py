@@ -2,8 +2,10 @@ import os
 from datetime import datetime, timedelta
 
 from airflow import DAG
-from airflow.providers.standard.operators.python import PythonOperator
-from airflow.providers.standard.operators.bash import BashOperator
+#from airflow.providers.standard.operators.python import PythonOperator
+from airflow.operators.python import PythonOperator
+#from airflow.providers.standard.operators.bash import BashOperator
+from airflow.operators.bash import BashOperator
 from airflow.utils.dates import days_ago
 from airflow.models import Variable
 
@@ -297,7 +299,7 @@ evaluate_finetuned_amazon = PythonOperator(
 
 wait_for_evaluation = BashOperator(
     task_id="wait_for_evaluation",
-    bash_command="spleep 60",
+    bash_command="sleep 60",
     dag=dag,
 )
 
