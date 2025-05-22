@@ -55,7 +55,7 @@ class SentimentModel:
             )
 
             self.model = AutoModelForSequenceClassification.from_pretrained(
-                self.model_name, cache_dir=self.cache_dir
+                self.model_name, cache_dir=self.cache_dir, low_cpu_mem_usage=False
             )
             self.model.to(self.device)
 

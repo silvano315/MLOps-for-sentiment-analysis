@@ -221,17 +221,17 @@ def generate_comparison_report(ds, **kwargs):
         
         ## Accuracy Comparison
         
-        - Base model on Tweet data: {base_accuracy:.4f if base_accuracy else 'N/A'}
-        - Fine-tuned model on Tweet data: {finetuned_accuracy:.4f if finetuned_accuracy else 'N/A'}
-        - Fine-tuned model on Amazon data: {finetuned_amazon_accuracy:.4f if finetuned_amazon_accuracy else 'N/A'}
+        - Base model on Tweet data: {f"{base_accuracy:.4f}" if base_accuracy is not None else 'N/A'}
+        - Fine-tuned model on Tweet data: {f"{finetuned_accuracy:.4f}" if finetuned_accuracy is not None else 'N/A'}
+        - Fine-tuned model on Amazon data: {f"{finetuned_amazon_accuracy:.4f}" if finetuned_amazon_accuracy is not None else 'N/A'}
         
         ## Improvement Analysis
         
-        The fine-tuned model shows a {'positive' if finetuned_accuracy and base_accuracy and finetuned_accuracy > base_accuracy else 'negative'} 
-        impact on tweet data, with a {'gain' if finetuned_accuracy and base_accuracy and finetuned_accuracy > base_accuracy else 'loss'} 
-        of {abs(finetuned_accuracy - base_accuracy):.4f if finetuned_accuracy and base_accuracy else 'N/A'} accuracy points.
+        The fine-tuned model shows a {"positive" if finetuned_accuracy and base_accuracy and finetuned_accuracy > base_accuracy else "negative"} 
+        impact on tweet data, with a {"gain" if finetuned_accuracy and base_accuracy and finetuned_accuracy > base_accuracy else "loss"} 
+        of {f"{abs(finetuned_accuracy - base_accuracy):.4f}" if finetuned_accuracy and base_accuracy else "N/A"} accuracy points.
         
-        The fine-tuned model performs {'better' if finetuned_amazon_accuracy and base_accuracy and finetuned_amazon_accuracy > base_accuracy else 'worse'} 
+        The fine-tuned model performs {"better" if finetuned_amazon_accuracy and base_accuracy and finetuned_amazon_accuracy > base_accuracy else "worse"} 
         on Amazon data compared to the base model on tweets.
         """
 
