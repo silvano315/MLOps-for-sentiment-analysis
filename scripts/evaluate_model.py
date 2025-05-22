@@ -99,7 +99,7 @@ def evaluate_on_dataset(dataset_name, split="test", num_samples=10):
     import json
 
     if dataset_name == "mteb/amazon_reviews_multi":
-        with open(results_dir / f"evaluation_{dataset_name.split("/")[1]}_{split}.json", "w") as f:
+        with open(results_dir / f"evaluation_{dataset_name.split('/')[1]}_{split}.json", "w") as f:
             json.dump(metrics, f, indent=2)
     else:
         with open(results_dir / f"evaluation_{dataset_name}_{split}.json", "w") as f:

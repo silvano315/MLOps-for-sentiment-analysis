@@ -77,7 +77,7 @@ def download_dataset(
             if dataset_name == "mteb/amazon_reviews_multi":
                 info_path = os.path.join(
                     save_path,
-                    f"{dataset_name.split("/")[1]}_{config_name if config_name else 'default'}_info.json",
+                    f"{dataset_name.split('/')[1]}_{config_name if config_name else 'default'}_info.json",
                 )
             else:
                 info_path = os.path.join(
