@@ -18,7 +18,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def evaluate_on_dataset(dataset_name, split="test", num_samples=10):
+def evaluate_on_dataset(dataset_name, split="test", num_samples=10, model_name: str = None):
     """
     Evaluate model on a specific dataset.
 
@@ -26,6 +26,7 @@ def evaluate_on_dataset(dataset_name, split="test", num_samples=10):
         dataset_name: Name of the dataset
         split: Dataset split to use (default: test)
         num_samples: Number of samples to use (None for all)
+        model_name: Name of the model to evaluate (if None, uses env var or default)
 
     Returns:
         Evaluation metrics
@@ -75,9 +76,10 @@ def evaluate_on_dataset(dataset_name, split="test", num_samples=10):
     metrics = evaluate_predictions(true_labels, predicted_labels)
 
     try:
-        model_name = os.environ.get(
-            "MODEL_NAME", "cardiffnlp/twitter-roberta-base-sentiment-latest"
-        )
+        if model_name is None:
+            model_name = os.environ.get(
+                "MODEL_NAME", "cardiffnlp/twitter-roberta-base-sentiment-latest"
+            )
 
         record_model_evaluation_metrics(
             evaluation_results=metrics,

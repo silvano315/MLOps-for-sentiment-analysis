@@ -127,7 +127,7 @@ def evaluate_finetuned_model_on_amazon(ds, **kwargs):
     logging.info("Starting evaluation of fine-tuned model on Amazon reviews")
     
     # Get the fine-tuned model name from Airflow variables, or use default
-    finetuned_model = Variable.get(
+    fine_tuned_model = Variable.get(
         "fine_tuned_model_name",
         "silvano315/fine_tuned_model"
     )
@@ -140,7 +140,7 @@ def evaluate_finetuned_model_on_amazon(ds, **kwargs):
                 "dataset": "mteb/amazon_reviews_multi",
                 "split": "test",
                 "samples": 100,
-                "model_name": finetuned_model
+                "model_name": fine_tuned_model
             },
             timeout=30
         )

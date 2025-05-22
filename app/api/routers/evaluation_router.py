@@ -49,7 +49,7 @@ async def evaluate_model(
 
             from scripts.evaluate_model import evaluate_on_dataset
 
-            metrics = evaluate_on_dataset(dataset, split, samples)
+            metrics = evaluate_on_dataset(dataset, split, samples, model_name)
 
             if metrics:
                 logger.info(f"Evaluation completed successfully")

@@ -54,13 +54,22 @@ class SentimentModel:
                 self.model_name, cache_dir=self.cache_dir
             )
 
-            self.model = AutoModelForSequenceClassification.from_pretrained(
-                self.model_name, cache_dir=self.cache_dir, low_cpu_mem_usage=False
-            )
-            self.model.to(self.device)
+            if self._is_peft_model(self.model_name):
+                base_model_name = "cardiffnlp/twitter-roberta-base-sentiment-latest"
+                self._load_peft_model(base_model_name, self.model_name)
+            else:
+                self.model = AutoModelForSequenceClassification.from_pretrained(
+                    self.model_name, cache_dir=self.cache_dir, low_cpu_mem_usage=False
+                )
+                self.model.to(self.device)
+
+            if self._is_peft_model(self.model_name):
+                tokenizer_name = "cardiffnlp/twitter-roberta-base-sentiment-latest"
+            else:
+                tokenizer_name = self.model_name
 
             self.tokenizer = AutoTokenizer.from_pretrained(
-                self.model_name, cache_dir=self.cache_dir
+                tokenizer_name, cache_dir=self.cache_dir
             )
 
             logger.info("model loaded successfully")
@@ -74,6 +83,37 @@ class SentimentModel:
 
         self.id2label = {0: "negative", 1: "neutral", 2: "positive"}
         self.label2id = {v: k for k, v in self.id2label.items()}
+
+    def _is_peft_model(self, model_name: str) -> bool:
+        """Check if the model is a PEFT (LoRA) model."""
+        try:
+            from huggingface_hub import model_info
+            info = model_info(model_name)
+            return 'peft' in [tag for tag in info.tags if tag]
+        except:
+            return False
+
+    def _load_peft_model(self, base_model_name: str, adapter_model_name: str):
+        """Load a PEFT model with its base model."""
+        from peft import PeftModel
+        
+        logger.info(f"Loading PEFT model: {adapter_model_name} with base: {base_model_name}")
+        
+        base_model = AutoModelForSequenceClassification.from_pretrained(
+            base_model_name,
+            cache_dir=self.cache_dir,
+            low_cpu_mem_usage=False
+        )
+        
+        self.model = PeftModel.from_pretrained(
+            base_model,
+            adapter_model_name,
+            cache_dir=self.cache_dir
+        )
+        
+        self.model.to(self.device)
+        
+        logger.info("PEFT model loaded successfully")
 
     @classmethod
     def list_available_models(cls) -> Dict[str, Dict[str, Any]]:
