@@ -66,10 +66,11 @@ services:
       - prometheus
     restart: unless-stopped
 
+  # Airflow
   airflow-init:
     build:
-      context: ./infrastructure/airflow
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: infrastructure/airflow/Dockerfile 
     image: apache/airflow:2.6.3
     depends_on:
       - postgres
@@ -89,8 +90,9 @@ services:
 
   airflow-webserver:
     build:
-      context: ./infrastructure/airflow
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: infrastructure/airflow/Dockerfile
+    container_name: airflow-webserver
     image: apache/airflow:2.6.3
     environment:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
@@ -115,11 +117,17 @@ services:
       timeout: 10s
       retries: 5
     restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   airflow-scheduler:
     build:
-      context: ./infrastructure/airflow
-      dockerfile: Dockerfile  
+      context: .
+      dockerfile: infrastructure/airflow/Dockerfile
+    container_name: airflow-scheduler
     image: apache/airflow:2.6.3
     environment:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
@@ -136,6 +144,11 @@ services:
       - sentiment-network
     command: scheduler
     restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   postgres:
     image: postgres:13
