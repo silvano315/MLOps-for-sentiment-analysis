@@ -392,6 +392,20 @@ def generate_drift_report(ds, **kwargs):
         
         # Alert Summary
         axes[1, 1].axis('off')
+
+        accuracy_drift = performance.get('accuracy_drift')
+        ref_acc = performance.get('reference_accuracy')
+        cur_acc = performance.get('current_accuracy')
+        f1_drift = performance.get('f1_drift')
+        ref_f1 = performance.get('f1_reference')
+        cur_f1 = performance.get('f1_current')
+
+        accuracy_drift_str = f"{accuracy_drift:.4f}" if accuracy_drift is not None else "N/A"
+        ref_acc_str = f"{ref_acc:.4f}" if ref_acc is not None else "N/A"
+        cur_acc_str = f"{cur_acc:.4f}" if cur_acc is not None else "N/A"
+        f1_drift_str = f"{f1_drift:.4f}" if f1_drift is not None else "N/A"
+        ref_f1_str = f"{ref_f1:.4f}" if ref_f1 is not None else "N/A"
+        cur_f1_str = f"{cur_f1:.4f}" if cur_f1 is not None else "N/A"
         
         alert_text = f"""
 DRIFT MONITORING SUMMARY
@@ -401,8 +415,8 @@ Configuration:
 - Current: {drift_results['config']['current_model']} on {drift_results['config']['current_dataset']}
 
 Performance Drift:
-- Accuracy: {performance.get('accuracy_drift', 'N/A'):.4f if performance.get('accuracy_drift') else 'N/A'}
-- F1 Score: {performance.get('f1_drift', 'N/A'):.4f if performance.get('f1_drift') else 'N/A'}
+- Accuracy: {accuracy_drift_str}
+- F1 Score: {f1_drift_str}
 
 Text Length Drift:
 - KS Test p-value: {length_drift['ks_pvalue']:.4f}
@@ -437,8 +451,8 @@ Sample Sizes:
 
 | Metric | Reference | Current | Drift |
 |--------|-----------|---------|-------|
-| Accuracy | {performance.get('reference_accuracy', 'N/A'):.4f if performance.get('reference_accuracy') else 'N/A'} | {performance.get('current_accuracy', 'N/A'):.4f if performance.get('current_accuracy') else 'N/A'} | {performance.get('accuracy_drift', 'N/A'):.4f if performance.get('accuracy_drift') else 'N/A'} |
-| F1 Score | {performance.get('reference_f1', 'N/A'):.4f if performance.get('reference_f1') else 'N/A'} | {performance.get('current_f1', 'N/A'):.4f if performance.get('current_f1') else 'N/A'} | {performance.get('f1_drift', 'N/A'):.4f if performance.get('f1_drift') else 'N/A'} |
+| Accuracy | {ref_acc_str} | {cur_acc_str} | {accuracy_drift_str} |
+| F1 Score | {ref_f1_str} | {cur_f1_str} | {f1_drift_str} |
 
 ## Text Length Distribution Analysis
 
