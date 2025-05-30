@@ -135,6 +135,11 @@ curl -X POST "http://localhost:8080/api/v1/evaluate?dataset=tweet_eval&split=tes
 curl -X POST "http://localhost:8080/api/v1/evaluate?dataset=mteb/amazon_reviews_multi&split=test&samples=50"
 ```
 
+If something goes wrong with the Amazon Reviews dataset (e.g. it can't be downloaded), just try to run this:
+```bash
+pip install -U datasets
+```
+
 ### Health & Status Endpoints
 
 #### `GET /health`
@@ -376,7 +381,6 @@ Our fine-tuning process uses **PEFT (Parameter Efficient Fine-Tuning)** with **L
 - **Dataset**: Amazon Reviews Multi (English subset)
 - **Technique**: LoRA with rank=8, alpha=16
 - **Tracking**: MLflow for experiment management
-- **Efficiency**: Only ~0.1% of parameters are trainable
 
 #### Run Fine-tuning Locally:
 ```bash
@@ -395,7 +399,7 @@ run_training(
     num_epochs=5,
     batch_size=16,
     learning_rate=3e-5,
-    split_ratio=0.3,  # Use 30% of dataset
+    split_ratio=0.2,
     push_to_hub=True,
     hf_token='HF_TOKEN'
 )
@@ -469,7 +473,6 @@ What you can test:
 - End-to-end data flow validation
 
 ```bash
-# Run dataset integration tests
 pytest tests/integration/test_dataset_integration.py -v
 ```
 
@@ -496,7 +499,7 @@ The CI/CD consists of **3 automated workflows**:
 2. Install dependencies
 3. Code formatting checks (black, isort)
 4. Type checking (mypy)
-5. Run unit tests with coverage
+5. Run unit tests
 6. Run integration tests
 7. Build Docker image
 8. Test Docker container health
@@ -510,7 +513,7 @@ The CI/CD consists of **3 automated workflows**:
 1. Build Docker image with metadata
 2. Push to GitHub Container Registry (ghcr.io)
 3. Push to DockerHub (optional)
-4. Deploy to HuggingFace Spaces
+4. Deploy App to HuggingFace Spaces
 5. Update production environment
 ```
 
@@ -545,7 +548,7 @@ The CI/CD consists of **3 automated workflows**:
 #### Manual Deployment:
 ```bash
 export HF_TOKEN="your_hf_token"
-export HF_USERNAME="silvano315"
+export HF_USERNAME="your_username"
 export HF_SPACE_NAME="sentiment-analysis-api"
 export DOCKER_IMAGE="ghcr.io/your_username/sentiment-api:latest"
 
@@ -583,8 +586,11 @@ Here I give you my fine-tuned model, but you can also use your own fine-tuned mo
 
 ```python
 from app.models.model_loader import SentimentModel
+from app.models.prediction import SentimentPredictor
 
 model = SentimentModel(model_name="silvano315/fine_tuned_model")
+predictor = SentimentPredictor(model)
+predictor.predict("This fine-tuned model works great!")
 
 # You can also set environment variable to use fine-tuned model
 import os
@@ -600,13 +606,126 @@ response = requests.post(
 #### Compare Models Performance:
 ```bash
 # Evaluate base model
-curl -X POST "http://localhost:8080/api/v1/evaluate?dataset=tweet_eval&model_name=cardiffnlp/twitter-roberta-base-sentiment-latest"
+curl -X POST "http://localhost:8080/api/v1/evaluate?dataset=tweet_eval&split=test&samples=100&model_name=cardiffnlp/twitter-roberta-base-sentiment-latest"
 
 # Evaluate fine-tuned model  
-curl -X POST "http://localhost:8080/api/v1/evaluate?dataset=tweet_eval&model_name=silvano315/fine_tuned_model"
+curl -X POST "http://localhost:8080/api/v1/evaluate?dataset=tweet_eval&samples=100&model_name=silvano315/fine_tuned_model"
 
 # Evaluate fine-tuned model on Amazon reviews
-curl -X POST "http://localhost:8080/api/v1/evaluate?dataset=mteb/amazon_reviews_multi&model_name=silvano315/fine_tuned_model"
+curl -X POST "http://localhost:8080/api/v1/evaluate?dataset=mteb/amazon_reviews_multi&samples=100&model_name=silvano315/fine_tuned_model"
+```
+
+---
+
+## 🔬 Phase 3: Continuous Monitoring & Workflow Orchestration with Airflow
+
+This final phase introduces **advanced MLOps capabilities** with Airflow for workflow orchestration, automated model evaluation, and data drift detection for production monitoring.
+
+### 🌊 Apache Airflow Integration
+
+#### Airflow Architecture
+
+Airflow setup includes:
+- **Airflow Webserver**: Web UI for workflow management (Port 8088)
+- **Airflow Scheduler**: Task scheduling and execution
+- **PostgreSQL**: Airflow metadata database
+- **Custom DAGs**: Automated workflows for ML operations
+
+#### Starting Airflow with Docker Compose
+
+```bash
+docker-compose up --build -d
+
+# Verify Airflow services
+docker-compose ps | grep airflow
+
+# Check Airflow logs
+docker-compose logs airflow-webserver
+docker-compose logs airflow-scheduler
+```
+
+#### Access Airflow Web Interface
+
+- **Airflow UI**: http://localhost:8088
+- **Default Login**: admin/admin (configured in docker-compose.yml)
+- **DAGs Location**: `infrastructure/airflow/dags/`
+
+---
+
+## 📊 Automated Model Evaluation Workflow
+
+### Model Evaluation DAG
+
+**Location**: `infrastructure/airflow/dags/model_evaluation_dag.py`
+
+#### DAG Tasks:
+1. **evaluate_base_model_on_tweets**: Test base RoBERTa on TweetEval
+2. **evaluate_finetuned_model_on_tweets**: Test fine-tuned model on TweetEval  
+3. **evaluate_finetuned_model_on_amazon**: Test fine-tuned model on Amazon Reviews
+4. **wait_for_evaluation**: Buffer time for evaluation completion
+5. **generate_comparison_report**: Create performance comparison report
+
+#### Manual DAG Execution:
+
+```bash
+# Access Airflow UI at http://localhost:8088
+# Navigate to DAGs → model_evaluation
+# Click "Trigger DAG" to run manually
+
+# Or via Airflow CLI in container
+docker-compose exec airflow-webserver airflow dags trigger model_evaluation
+```
+
+#### View Evaluation Results:
+
+Three different methods to check evaluation results.
+
+```bash
+# Prometheus
+curl 'http://localhost:9090/api/v1/query?query=model_accuracy'
+
+# Grafana Model Metrics Dashboard
+# Open http://localhost:3000 → Dashboards → Model Evaluation Metrics
+
+# Reports in container
+docker-compose exec airflow-webserver ls /tmp/model_comparison_*
+```
+
+---
+
+## 🚨 Data Drift Monitoring
+
+### Data Drift Detection DAG
+
+**Location**: `infrastructure/airflow/dags/data_drift_monitoring_dag.py`
+
+#### DAG Tasks:
+1. **sample_reference_data**: Collect baseline data samples
+2. **sample_current_data**: Collect current data samples
+3. **calculate_performance_drift**: Compare model performance metrics
+4. **generate_drift_report**: Create comprehensive drift analysis report
+5. **send_alerts_if_needed**: Generate alerts if drift detected
+
+#### Manual Drift Detection:
+
+```bash
+# Trigger drift monitoring manually
+# In Airflow UI: DAGs → data_drift_monitoring → Trigger DAG
+
+# Or via CLI
+docker-compose exec airflow-webserver airflow dags trigger data_drift_monitoring
+```
+
+#### View Drift Reports:
+
+```bash
+docker-compose exec airflow-webserver ls /tmp/drift_*
+
+docker-compose exec airflow-webserver cat /tmp/drift_monitoring_report_$(date +%Y%m%d).md
+
+docker-compose exec airflow-webserver ls /tmp/drift_report_*.png
+
+docker-compose exec airflow-webserver cat /tmp/drift_alerts_$(date +%Y%m%d).json
 ```
 
 ---
