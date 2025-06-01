@@ -642,6 +642,15 @@ docker-compose ps | grep airflow
 # Check Airflow logs
 docker-compose logs airflow-webserver
 docker-compose logs airflow-scheduler
+
+# Create admin user
+docker-compose exec airflow-webserver airflow users create \
+  --username admin \
+  --password admin \
+  --firstname Admin \
+  --lastname User \
+  --role Admin \
+  --email admin@example.com
 ```
 
 #### Access Airflow Web Interface
@@ -688,7 +697,8 @@ curl 'http://localhost:9090/api/v1/query?query=model_accuracy'
 # Open http://localhost:3000 → Dashboards → Model Evaluation Metrics
 
 # Reports in container
-docker-compose exec airflow-webserver ls /tmp/model_comparison_*
+docker-compose exec -it airflow-scheduler /bin/bash 
+cat /tmp/model_comparison_*
 ```
 
 ---
@@ -724,8 +734,6 @@ docker-compose exec airflow-webserver ls /tmp/drift_*
 docker-compose exec airflow-webserver cat /tmp/drift_monitoring_report_$(date +%Y%m%d).md
 
 docker-compose exec airflow-webserver ls /tmp/drift_report_*.png
-
-docker-compose exec airflow-webserver cat /tmp/drift_alerts_$(date +%Y%m%d).json
 ```
 
 ---
